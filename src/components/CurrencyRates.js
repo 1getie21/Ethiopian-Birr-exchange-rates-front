@@ -1,11 +1,9 @@
+// src/components/CurrencyRates.js
+
 import React from 'react';
 import { Card, List } from 'antd';
 
-const CurrencyRates = ({ rates = {} }) => {
-    if (!rates || typeof rates !== 'object') {
-        return <Card title="Currency Rates">No data available</Card>;
-    }
-
+const CurrencyRates = ({ rates }) => {
     return (
         <Card title="Currency Rates">
             <List
@@ -25,4 +23,3 @@ const CurrencyRates = ({ rates = {} }) => {
 };
 
 export default CurrencyRates;
-

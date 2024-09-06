@@ -2,34 +2,40 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, Menu, Button } from "antd";
 import {
-    DollarCircleOutlined, GlobalOutlined, BankOutlined, UnorderedListOutlined,
-    MenuUnfoldOutlined, MenuFoldOutlined, ArrowUpOutlined, ApartmentOutlined, MoneyCollectOutlined,
+    DollarCircleOutlined, TrendingUpOutlined, GlobalOutlined, BankOutlined, UnorderedListOutlined, BuildingOutlined,
+    MenuUnfoldOutlined, MenuFoldOutlined,
 } from "@ant-design/icons";
-import ExchangeRateList from "./ExchangeRateList";
+import AuthService from "../auth/AuthService";
 
+// Get roles from AuthService
+const listOfRoles = AuthService?.getRoles();
+
+// Function to create menu item
 function getItem(label, key, icon, children, type) {
     return {
         key,
         icon,
         children,
         label,
-        type,ExchangeRateList
+        type,
     };
 }
 
+// Initialize list of menu items
 const ListOfItems = [
     getItem('Currency Rates', 'currency-rates', <DollarCircleOutlined />),
-    getItem('Overall Trends', 'overall-trends', <ArrowUpOutlined />),
+    getItem('Overall Trends', 'overall-trends', <TrendingUpOutlined />),
     getItem('Other Currencies', 'other-currencies', <GlobalOutlined />),
     getItem('Bank Rates', 'bank-rates', <BankOutlined />),
     getItem('Currency List', 'currency-list', <UnorderedListOutlined />),
-    getItem('Bank List', 'bank-list', <ApartmentOutlined  />),
-    getItem('Exchange Rate List', 'Exchange-Rate-List', <MoneyCollectOutlined  />)
+    getItem('Bank List', 'bank-list', <BuildingOutlined />)
 ];
 
 function SideMenu() {
     const [collapsed, setCollapsed] = useState(false);
-    const toggleCollapsed = () => setCollapsed(!collapsed);
+    const toggleCollapsed = () => {
+        setCollapsed(!collapsed);
+    };
     const navigate = useNavigate();
 
     return (
@@ -56,7 +62,7 @@ function SideMenu() {
             </Tooltip>
             <Menu
                 style={{ height: '100%' }}
-                onClick={({ key }) => navigate(`/${key}`)}
+                onClick={({ key }) => navigate(key)}
                 defaultSelectedKeys={['currency-rates']}
                 theme="dark"
                 inlineCollapsed={collapsed}

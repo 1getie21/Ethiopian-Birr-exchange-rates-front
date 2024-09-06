@@ -6,7 +6,6 @@ import OtherCurrencies from './OtherCurrencies';
 import BankRates from './BankRates';
 import CurrencyList from './CurrencyList';
 import BankList from './BankList';
-import ExchangeRateList from "./ExchangeRateList";
 
 function Content() {
     return (
@@ -26,10 +25,10 @@ function Content() {
                 <Route path="/bank-rates" element={<BankRates />} />
                 <Route path="/currency-list" element={<CurrencyList />} />
                 <Route path="/bank-list" element={<BankList />} />
-                <Route path="/Exchange-Rate-List" element={<ExchangeRateList />} />
             </Routes>
         </div>
     );
 }
 
 export default Content;
+
