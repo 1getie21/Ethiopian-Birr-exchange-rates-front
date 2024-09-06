@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/../exchange-rate.iml" filepath="$PROJECT_DIR$/../exchange-rate.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/../exchange-rate-app.iml" filepath="$PROJECT_DIR$/../exchange-rate-app.iml" />
+>>>>>>> origin/master
     </modules>
   </component>
 </project>
