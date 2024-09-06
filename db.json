@@ -1,0 +1,32 @@
+{
+  "currencyRates": [
+    { "currency": "USD", "rate": 54.25 },
+    { "currency": "EUR", "rate": 60.30 }
+  ],
+  "overallTrends": [
+    { "month": "Jan", "rate": 53.00, "currency": "USD" },
+    { "month": "Feb", "rate": 54.00, "currency": "USD" },
+    { "month": "Mar", "rate": 55.00, "currency": "USD" }
+  ],
+  "otherCurrencies": [
+    { "currency": "GBP", "rate": 70.15 },
+    { "currency": "JPY", "rate": 0.50 }
+  ],
+  "bankRates": [
+    { "bank": "Bank xx", "buyingRate": 54.00, "sellingRate": 55.00 },
+    { "bank": "Bank aa", "buyingRate": 53.50, "sellingRate": 54.50 }
+  ],
+  "currencyList": [
+    { "currency": "USD" },
+    { "currency": "EUR" },
+    { "currency": "GBP" }
+  ],
+  "bankList": [
+    { "bank": "Bank xx" },
+    { "bank": "Bank aa" }
+  ],
+  "exchangeRateList": [
+    { "date": "2024-09-01", "currency": "USD", "rate": 54.25 },
+    { "date": "2024-09-01", "currency": "EUR", "rate": 60.30 }
+  ]
+}
