@@ -1,16 +1,9 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Tooltip, Menu, Button } from "antd";
-import {
-    DollarCircleOutlined, TrendingUpOutlined, GlobalOutlined, BankOutlined, UnorderedListOutlined, BuildingOutlined,
-    MenuUnfoldOutlined, MenuFoldOutlined,
-} from "@ant-design/icons";
-import AuthService from "../auth/AuthService";
+import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {Tooltip, Menu, Button} from "antd";
 
-// Get roles from AuthService
-const listOfRoles = AuthService?.getRoles();
+import {MenuUnfoldOutlined, MenuFoldOutlined,} from "@ant-design/icons";
 
-// Function to create menu item
 function getItem(label, key, icon, children, type) {
     return {
         key,
@@ -23,12 +16,9 @@ function getItem(label, key, icon, children, type) {
 
 // Initialize list of menu items
 const ListOfItems = [
-    getItem('Currency Rates', 'currency-rates', <DollarCircleOutlined />),
-    getItem('Overall Trends', 'overall-trends', <TrendingUpOutlined />),
-    getItem('Other Currencies', 'other-currencies', <GlobalOutlined />),
-    getItem('Bank Rates', 'bank-rates', <BankOutlined />),
-    getItem('Currency List', 'currency-list', <UnorderedListOutlined />),
-    getItem('Bank List', 'bank-list', <BuildingOutlined />)
+    getItem('Exchange-Rate', 'exchange-rate'),
+    getItem('Country-Code', 'country-code'),
+    getItem('Banks', 'bank')
 ];
 
 function SideMenu() {
@@ -44,8 +34,10 @@ function SideMenu() {
             boxShadow: "0 5px 8px rgba(0, 0, 0, 0.1)",
             padding: "0 10px",
             marginLeft: -10,
+            marginTop: 20,
             display: "flex",
             height: "100vh",
+            width:"200px",
             fontFamily: 'Roboto, sans-serif',
             overflowY: 'auto',
         }}>
@@ -57,12 +49,12 @@ function SideMenu() {
                         borderRadius: 0,
                         marginBottom: 10,
                     }}>
-                    {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                    {collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
                 </Button>
             </Tooltip>
             <Menu
-                style={{ height: '100%' }}
-                onClick={({ key }) => navigate(key)}
+                style={{height: '100%'}}
+                onClick={({key}) => navigate(key)}
                 defaultSelectedKeys={['currency-rates']}
                 theme="dark"
                 inlineCollapsed={collapsed}

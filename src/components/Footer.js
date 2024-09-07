@@ -6,7 +6,7 @@ function Footer() {
             style={{
                 textAlign: "center",
                 color: "white",
-                backgroundColor: "rgba(8, 5, 46, 0.98)",
+                backgroundColor: "rgba(1, 5, 46, 0.98)",
                 fontWeight: "bold",
                 padding: "20px",
             }}

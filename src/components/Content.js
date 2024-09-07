@@ -1,30 +1,24 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import CurrencyRates from './CurrencyRates';
-import OverallTrends from './OverallTrends';
-import OtherCurrencies from './OtherCurrencies';
-import BankRates from './BankRates';
-import CurrencyList from './CurrencyList';
-import BankList from './BankList';
+import Banks from './Banks';
+import CountryCode from './CountryCode';
+import ExchangeRateList from './ExchangeRateList';
 
 function Content() {
     return (
         <div
             style={{
                 width: '100%',
-                marginTop: '10px',
+                marginTop: '100px',
                 marginLeft: '10px',
                 marginRight: '2px',
                 backgroundColor: "rgba(255,255,255,0.62)",
             }}
         >
             <Routes>
-                <Route path="/currency-rates" element={<CurrencyRates />} />
-                <Route path="/overall-trends" element={<OverallTrends />} />
-                <Route path="/other-currencies" element={<OtherCurrencies />} />
-                <Route path="/bank-rates" element={<BankRates />} />
-                <Route path="/currency-list" element={<CurrencyList />} />
-                <Route path="/bank-list" element={<BankList />} />
+                <Route path="/exchange-rate" element={<ExchangeRateList />} />
+                <Route path="/country-code" element={<CountryCode />} />
+                <Route path="/bank" element={<Banks />} />
             </Routes>
         </div>
     );
