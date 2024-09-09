@@ -18,9 +18,9 @@ const CountryCode = () => {
     const API_URL = "http://localhost:8080";
     const [form] = Form.useForm();
 
-    // Function to fetch banks list from the server
-    const fetchBanks = () => {
-        axiosInstance.get(`${API_URL}/banks`)
+    // Function to fetch countr code list from the server
+    const fetchCountryCode = () => {
+        axiosInstance.get(`${API_URL}/country`)
             .then(response => {
                 setData(response?.data?.content || []);
                 setLoading(false);
@@ -31,9 +31,9 @@ const CountryCode = () => {
             });
     };
 
-    // Function to fetch bank details by ID
+    // Function to fetch countr code details by ID
     const getDataById = (id) => {
-        axiosInstance.get(`${API_URL}/banks/${id}`)
+        axiosInstance.get(`${API_URL}/country/${id}`)
             .then(response => {
                 setDataById(response.data);
                 form.setFieldsValue(response.data);
@@ -51,19 +51,19 @@ const CountryCode = () => {
         });
     };
 
-    // Handle deleting a bank
+    // Handle deleting a countr code
     const confirmDelete = (id) => {
-        axiosInstance.delete(`${API_URL}/banks/${id}`)
+        axiosInstance.delete(`${API_URL}/country/${id}`)
             .then(() => {
-                openNotificationWithIcon('success', 'Success', 'Bank deleted successfully.');
-                fetchBanks();
+                openNotificationWithIcon('success', 'Success', 'Country deleted successfully.');
+                fetchCountryCode();
             })
             .catch(error => {
                 openNotificationWithIcon('error', 'Error', error?.message);
             });
     };
 
-    // Open the drawer form for adding/updating a bank
+    // Open the drawer form for adding/updating a countr code
     const showDrawer = (id) => {
         setOpen(true);
         form.resetFields();
@@ -75,23 +75,23 @@ const CountryCode = () => {
         }
     };
 
-    // Submit form to add or update bank
+    // Submit form to add or update countr code
     const handleSubmit = (values) => {
         if (addNewMode) {
-            axiosInstance.post(`${API_URL}/banks`, values)
+            axiosInstance.post(`${API_URL}/country`, values)
                 .then(() => {
-                    openNotificationWithIcon('success', 'Success', 'Bank added successfully.');
-                    fetchBanks();
+                    openNotificationWithIcon('success', 'Success', 'Country added successfully.');
+                    fetchCountryCode();
                     setOpen(false);
                 })
                 .catch(error => {
                     openNotificationWithIcon('error', 'Error', error?.message);
                 });
         } else {
-            axiosInstance.put(`${API_URL}/banks/${dataById.id}`, values)
+            axiosInstance.put(`${API_URL}/country/${dataById.id}`, values)
                 .then(() => {
-                    openNotificationWithIcon('success', 'Success', 'Bank updated successfully.');
-                    fetchBanks();
+                    openNotificationWithIcon('success', 'Success', 'Country updated successfully.');
+                    fetchCountryCode();
                     setOpen(false);
                 })
                 .catch(error => {
@@ -100,9 +100,9 @@ const CountryCode = () => {
         }
     };
 
-    // Fetch banks data on mount
+    // Fetch countr code data on mount
     useEffect(() => {
-        fetchBanks();
+        fetchCountryCode();
     }, []);
 
     const columns = [
@@ -113,9 +113,19 @@ const CountryCode = () => {
             render: (text, record, index) => index + 1,
         },
         {
-            title: 'Bank',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'Country code',
+            dataIndex: 'flag',
+            key: 'flag',
+            render: (flag, record) => (
+                <Space size="middle">
+                    <img
+                        src={flag}
+                        alt={record.name}
+                        style={{ width: '20px', marginRight: '10px' }}
+                    />
+                    {record.name}
+                </Space>
+            ),
         },
         {
             title: 'Actions',
@@ -136,8 +146,8 @@ const CountryCode = () => {
             {/* Main layout with space between table and buttons */}
             <Row gutter={[16, 16]} justify="center">
                 <Col span={24} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                    <h2>Banks</h2>
-                    <Button type="primary" icon={<PlusOutlined />} onClick={() => showDrawer()}>Add New Bank</Button>
+                    <h2>Country Code</h2>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => showDrawer()}>Add New Code</Button>
                 </Col>
 
                 <Col span={24}>
@@ -152,9 +162,9 @@ const CountryCode = () => {
                 </Col>
             </Row>
 
-            {/* Drawer for adding/updating banks */}
+            {/* Drawer for adding/updating countr code */}
             <Drawer
-                title={addNewMode ? "Add New Bank" : "Update Bank"}
+                title={addNewMode ? "Add New Country" : "Update Country"}
                 width={360}
                 placement="right"
                 onClose={() => setOpen(false)}
@@ -164,17 +174,23 @@ const CountryCode = () => {
                     layout="vertical"
                     onFinish={handleSubmit}>
                     <Form.Item
-                        label="Bank Name"
+                        label="Country Code"
                         name="name"
-                        rules={[{ required: true, message: 'Please enter bank name!' }]}>
-                        <Input placeholder="Enter bank name" />
+                        rules={[{ required: true, message: 'Please enter Country Code!' }]}>
+                        <Input placeholder="Enter Country Code" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Country Flag"
+                        name="flag"
+                        rules={[{ required: true, message: 'Please enter Country Code!' }]}>
+                        <Input placeholder="Enter Country Code" />
                     </Form.Item>
 
                     {/* Additional Form Items can be added here if needed */}
 
                     <Form.Item>
                         <Button type="primary" htmlType="submit" block>
-                            {addNewMode ? "Add Bank" : "Update Bank"}
+                            {addNewMode ? "Add Country" : "Update Country"}
                         </Button>
                     </Form.Item>
                 </Form>
