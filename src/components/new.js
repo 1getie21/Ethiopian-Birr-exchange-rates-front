@@ -270,18 +270,18 @@ const ExchangeRateList = () => {
         "logo": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAiADIDASIAAhEBAxEB/8QAGwABAAIDAQEAAAAAAAAAAAAAAAYHAQIECAX/xAA5EAABAgMEBQgJBQEAAAAAAAABAgMABBEGEhMhBQcjUVciJCcxMpGT0hRBU1ZhktHT4xYXMzdxsf/EABoBAAIDAQEAAAAAAAAAAAAAAAACAQMFBgT/xAAtEQACAQECCwkAAAAAAAAAAAAAAQIRA1ISFCExMkFRkqLR0gQFE3GRobHB8P/aAAwDAQACEQMRAD8AqqXQ0rR+OoSqilhLKnkS5w0hQcOCdkazSrtUrrQAHM0y6pmVaZM0FSyGgyPRVYksSWa3+bL2A56bp5eQ5Ks93NKllejUPKel1KS0mVxUtNJCbwcPo4QWyS6qlfSK0T1Emojqfal2zMAYLWETJADBVhVv81FGuU6aDnYyFOvMR0LrUzorIHZVthcwXGG2AzSVWp2XNGc1c2XsRzzknl1A5Ks91gF3VheOytP3p+sQEoaZdcUyuVYW0sSaFKS04lo1URLEJbqtwUBMyMuT15iPQZ/dC8ofqWyf+XvxRm9v1V/Zjd7pm4KVHTNra+EyusbVd7K1Pen6xnG1W+ytR3p+sWF0n+8lkvm/HDpP95LJfN+OM+iNnGJX3vPpK/Ezqv8AZWo70/WEWF0ne8dk/n/FCCiIxiV57z6SJdH6SkCwlthcYVKJo9MZMqrebG37JvKqPXU74A6vxdpYS2ouy5lE7WYyZNatjb9k3lVHxO+JSpi3tTTWPoMCvVgseSMYNvuJGg/BY8kP407zPFilhsXq+ki4NgRdpYS2wuy5lRtpjJk1q3/P2TU5fExph6uq/wBeWs7nfvRLMC3/ABI0H4LHkhhW/wCI+g/BY8kJOcp6WUus7OFloNLybX0RPD1d8PLWdzv3oYervh5azud+9ErwbfcSNB+Cx5IYNvuJGg/BY8kLk2exbhO9xS5EVwdXfDy1nc796ESzAt9xH0H4LHkhBgrYGE7/ABS5HnB4DGcyHaP/AGNKDdCEKjq1mFBuhQboQiQFBuhQboQiCT6LKU4SMh2R6oQhAIf/2Q=="
 
     {
-            title: 'Bank',
+        title: 'Bank',
             dataIndex: 'bank',
-            key: 'bank',
-            align: 'center',
-            render: bank => (
-                <Space size="middle">
-                    <BankOutlined style={{width: '20px', marginRight: '10px'}}/>
-                    {bank}
-                </Space>
-            ),
-        },
-    ];
+        key: 'bank',
+        align: 'center',
+        render: bank => (
+        <Space size="middle">
+            <BankOutlined style={{width: '20px', marginRight: '10px'}}/>
+            {bank}
+        </Space>
+    ),
+    },
+];
 
     const columns = [
         {
