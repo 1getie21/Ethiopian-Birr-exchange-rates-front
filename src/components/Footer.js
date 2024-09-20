@@ -10,7 +10,7 @@ const Footer = () => {
             style={{
                 textAlign: "center",
                 color: "white",
-                background: "linear-gradient(to right, rgba(0.1, 255, 255, 0.1)  rgba(1, 5, 46, 0.98) 70%)",
+                background: "linear-gradient(to right, rgba(10, 141, 255, 1), rgba(1, 5, 46, 0.98) 70%)",
                 fontWeight: "bold",
                 padding: "20px",
             }}

@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
     Button, Col, Tag, Row, Table, Space, notification, Card
 } from "antd";
-import './table.css';
+// import './table.css';
 
 const axiosInstance = axios.create();
 
@@ -111,11 +111,6 @@ const ExchangeRateList = () => {
             title: 'Selling',
             dataIndex: 'selling',
             key: 'selling',
-            render: (text, record) => (
-                <Tag bordered={false} color="magenta">
-                    {text}
-                </Tag>
-            ),
 
             align: 'center',
         }
