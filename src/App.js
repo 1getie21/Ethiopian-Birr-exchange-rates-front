@@ -1,23 +1,18 @@
-import './App.css';   
-import React from 'react'; 
+import './App.css';
+import React from 'react';
 import SideMenu from "./components/SideMenu";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Content from "./components/Content";
+import ExchangeRateList from "./components/ExchangeRateList";
 
 const App = () => {
-
     return (
-        <div>
+        <div className="app-container">
             <Header/>
-            <div style={{display: "flex", flexDirection: "row"}}>
-                <SideMenu/>
-                <Content/>
-            </div>
+            <ExchangeRateList/>
             <Footer/>
         </div>
-
     );
 };
-
 export default App;

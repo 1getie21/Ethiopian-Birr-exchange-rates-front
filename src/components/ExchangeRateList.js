@@ -1,125 +1,36 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {
-    Button, Col, Drawer, Form, Input, DatePicker, notification, Tag, Row, Select, Table, Space
+    Button, Col, Tag, Row, Table, Space, notification, Card
 } from "antd";
-import {EditOutlined, BankOutlined, DeleteOutlined, PlusOutlined} from "@ant-design/icons";
+import './table.css';
 
-const {RangePicker} = DatePicker;
-const {Option} = Select;
 const axiosInstance = axios.create();
 
 const ExchangeRateList = () => {
-    const [data, setData] = useState([]);
-    const [dataById, setDataById] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [addNewMode, setAddNewMode] = useState(false);
-    const [api, contextHolder] = notification.useNotification();
-    const API_URL = "http://localhost:8080";
     const LIVE_URL = "http://10.10.10.231:5000/v1";
-    const [form] = Form.useForm();
-    const [banks, setBanks] = useState([]);
+    const [cbe, setCbe] = useState([]);
+    const [allBankExchangeRate, setAllBankExchangeRate] = useState([]);
+    const [api, contextHolder] = notification.useNotification();
 
-    const [exchangeRateReport, setBanksExchangeRate] = useState([]);
-    const [country, setCountry] = useState([]);
-    const [exchangeRateBycountryCode, setExchangeRateBycountryCode] = useState([]);
-
-    const [selectedInstitution, setSelectedInstitution] = useState('CBE');
-    const [selectedTimePeriod, setSelectedTimePeriod] = useState('This Month');
-    const [selectedCurrency, setSelectedCurrency] = useState('USD');
-    // Function to fetch banks list from the server
-    const fetchExchangeRate = () => {
-        axiosInstance.get(`${API_URL}/exchange-rate`)
-            .then(response => {
-                setData(response?.data?.content || []);
-                setLoading(false);
-            })
-            .catch(error => {
-                setLoading(false);
-                openNotificationWithIcon('error', 'Error', error?.message);
-            });
-    };
-
-    // Function to fetch bank details by ID
-    const getDataById = (id) => {
-        axiosInstance.get(`${API_URL}/exchange-rate/${id}`)
-            .then(response => {
-                setDataById(response.data);
-                response.data.banks = response?.data?.banks?.id;
-                response.data.country = response?.data?.country?.id;
-                form.setFieldsValue(response.data);
-            })
-            .catch(error => {
-                openNotificationWithIcon('error', 'Error', error?.message);
-            });
-    };
-
-    // Notification function
-    const openNotificationWithIcon = (type, messageTitle, description) => {
-        api[type]({
-            message: messageTitle,
-            description: description,
-        });
-    };
-
-
-    // Other state variables and useEffect hooks...
-
-    const handleInstitutionChange = (value) => {
-        setSelectedInstitution(value);
-        // Add any additional logic if necessary
-    };
-
-    const handleTimePeriodChange = (value) => {
-        setSelectedTimePeriod(value);
-        // Add any additional logic if necessary
-    };
-
-    const handleCurrencyChange = (value) => {
-        setSelectedCurrency(value);
-        // Add any additional logic if necessary
-    };
-
-    // Handle deleting a bank
-    const confirmDelete = (id) => {
-        axiosInstance.delete(`${API_URL}/exchange-rate/${id}`)
-            .then(() => {
-                openNotificationWithIcon('success', 'Success', 'Bank deleted successfully.');
-                fetchExchangeRate();
-            })
-            .catch(error => {
-                openNotificationWithIcon('error', 'Error', error?.message);
-            });
-    };
-
-    // Open the drawer form for adding/updating a bank
-    const showDrawer = (id) => {
-        setOpen(true);
-        form.resetFields();
-        if (id === undefined) {
-            setAddNewMode(true);
-        } else {
-            getDataById(id);
-            setAddNewMode(false);
-        }
-    };
-
-    // Submit form to add or update exchange-rate
-    const login = () => {
+    // Login function
+    const login = async () => {
         const auth = {
-            "password": 'test1234',
-            "email": 'test3@test.et'
+            password: 'test1234',
+            email: 'test3@test.et'
+        };
+
+        try {
+            const response = await axiosInstance.post(`${LIVE_URL}/users/login`, auth);
+            localStorage.setItem("token", response?.data?.token);
+        } catch (error) {
+            console.error("Login error:", error?.message);
+            api.error({message: 'Login failed', description: error?.message});
         }
-        axiosInstance.post(`${LIVE_URL}/users/login`, auth)
-            .then((response) => {
-                localStorage.setItem("token",response?.data?.token)
-            })
-            .catch(error => {
-                openNotificationWithIcon('error', 'Error', error?.message);
-            });
     };
-    const getAllCbeExchangeRateData = () => {
+
+    // Fetch exchange rates
+    const getAllCbeExchangeRateData = async () => {
         const auth = {
             request: {
                 bank_id: ["cbe"],
@@ -128,467 +39,178 @@ const ExchangeRateList = () => {
             }
         };
 
-        axiosInstance.post(`${LIVE_URL}/forex/latest`, auth, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${localStorage.getItem("token")}` // Ensure to use Bearer if needed
-            }
-        })
-            .then((response) => {
-                console.log(response.data); // Handle the response data as needed
-            })
-            .catch(error => {
-                openNotificationWithIcon('error', 'Error', error?.message);
+        try {
+            const response = await axiosInstance.post(`${LIVE_URL}/forex/latest`, auth, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${localStorage.getItem("token")}` // Use Bearer token
+                }
             });
-    };
-
-    const handleSubmit = (values) => {
-        values.banks = {"id": values.banks};
-        values.country = {"id": values.country};
-        if (addNewMode) {
-            axiosInstance.post(`${API_URL}/exchange-rate`, values)
-                .then(() => {
-                    openNotificationWithIcon('success', 'Success', 'Bank added successfully.');
-                    fetchExchangeRate();
-                    setOpen(false);
-                })
-                .catch(error => {
-                    openNotificationWithIcon('error', 'Error', error?.message);
-                });
-        } else {
-            axiosInstance.put(`${API_URL}/exchange-rate/${dataById.id}`, values)
-                .then(() => {
-                    openNotificationWithIcon('success', 'Success', 'Bank updated successfully.');
-                    fetchExchangeRate();
-                    setOpen(false);
-                })
-                .catch(error => {
-                    openNotificationWithIcon('error', 'Error', error?.message);
-                });
+            setCbe(response?.data[0]?.rate || []);
+        } catch (error) {
+            console.error("Fetch error:", error?.message);
+            api.error({message: 'Fetch failed', description: error?.message});
         }
     };
 
-    const handleBankChange = (value) => {
-        axiosInstance.get(API_URL + "/exchange-rate/bank/" + value)
-            .then(response => {
-                    setData(response?.data?.content);
-                    setLoading(false);
-                },
-                error => {
-                    setLoading(false);
-                    openNotificationWithIcon('error', 'Error', error?.message);
-                });
+    const getAllBanksExchangeRateData = async () => {
+        const auth = {
+            request: {
+                bank_id: ["all"],
+                from: ["all"],
+                to: "BIRR"
+            }
+        };
+
+        try {
+            const response = await axiosInstance.post(`${LIVE_URL}/forex/latest`, auth, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${localStorage.getItem("token")}` // Use Bearer token
+                }
+            });
+            setAllBankExchangeRate(response?.data);
+        } catch (error) {
+            console.error("Fetch error:", error?.message);
+            api.error({message: 'Fetch failed', description: error?.message});
+        }
     };
-    const handleCountryCodeChange = (value) => {
-        axiosInstance.get(API_URL + "/exchange-rate/code/" + value)
-            .then(response => {
-                    setExchangeRateBycountryCode(response?.data?.content);
-                    setLoading(false);
-                },
-                error => {
-                    setLoading(false);
-                    openNotificationWithIcon('error', 'Error', error?.message);
-                });
-    };
-
-    //Get all bank lists
-    const getAllBanks = () => {
-        axiosInstance.get(API_URL + "/banks")
-            .then(response => {
-                    const s = response?.data?.content;
-                    setBanks(s);
-                },
-                error => {
-                    openNotificationWithIcon('error', 'Error', error?.message);
-                });
-    };
-
-    const getAllCountryCode = () => {
-        axiosInstance.get(API_URL + "/country")
-            .then(response => {
-                    const s = response?.data?.content;
-                    setCountry(s);
-                },
-                error => {
-                    openNotificationWithIcon('error', 'Error', error?.message);
-                });
-    };
-
-
-    //Get all bank exchange rate reports
-    const getAllExchangeRateReportsGroupedByBanks = () => {
-        axiosInstance.get(API_URL + "/banks/exchange-rate")
-            .then(response => {
-                    const s = response?.data;
-                    setBanksExchangeRate(s);
-                },
-                error => {
-                    openNotificationWithIcon('error', 'Error', error?.message);
-                });
-    };
-
-
-    // Fetch banks data on mount
+    // Fetch data on mount
     useEffect(() => {
-        login();
-        getAllCbeExchangeRateData();
-        // fetchExchangeRate();
-        // getAllCountryCode();
-        // getAllExchangeRateReportsGroupedByBanks();
-        // getAllBanks();
+        login().then(() => {
+            getAllCbeExchangeRateData();
+            getAllBanksExchangeRateData();
+        });
     }, []);
 
-// Static Data for the Header
-    const staticData = [
-        {code: 'USD ($)', buying: '100.01', selling: '120.78', bank: 'dash'},
-        {code: 'EUR (€)', buying: '97.15', selling: '100.60', bank: 'CBE'},
-    ];
-
-    const staticDataColumns = [
+    // Table columns
+    const cbeDataColumn = [
         {
             title: 'Code',
             dataIndex: 'base',
             key: 'base',
-            align: 'center',
-        },
-        {
-            title: 'Buying',
-            dataIndex: 'buying',
-            key: 'buying',
-            align: 'center',
-        },
-        {
-            title: 'Selling',
-            dataIndex: 'selling',
-            key: 'selling',
-            align: 'center',
-        },
-        "buying": 112.3957,
-        "selling": 124.7592,
-        "base": "USD",
-        "base_name": "US Dollar",
-        "logo": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAiADIDASIAAhEBAxEB/8QAGwABAAIDAQEAAAAAAAAAAAAAAAYHAQIECAX/xAA5EAABAgMEBQgJBQEAAAAAAAABAgMABBEGEhMhBQcjUVciJCcxMpGT0hRBU1ZhktHT4xYXMzdxsf/EABoBAAIDAQEAAAAAAAAAAAAAAAACAQMFBgT/xAAtEQACAQECCwkAAAAAAAAAAAAAAQIRA1ISFCExMkFRkqLR0gQFE3GRobHB8P/aAAwDAQACEQMRAD8AqqXQ0rR+OoSqilhLKnkS5w0hQcOCdkazSrtUrrQAHM0y6pmVaZM0FSyGgyPRVYksSWa3+bL2A56bp5eQ5Ks93NKllejUPKel1KS0mVxUtNJCbwcPo4QWyS6qlfSK0T1Emojqfal2zMAYLWETJADBVhVv81FGuU6aDnYyFOvMR0LrUzorIHZVthcwXGG2AzSVWp2XNGc1c2XsRzzknl1A5Ks91gF3VheOytP3p+sQEoaZdcUyuVYW0sSaFKS04lo1URLEJbqtwUBMyMuT15iPQZ/dC8ofqWyf+XvxRm9v1V/Zjd7pm4KVHTNra+EyusbVd7K1Pen6xnG1W+ytR3p+sWF0n+8lkvm/HDpP95LJfN+OM+iNnGJX3vPpK/Ezqv8AZWo70/WEWF0ne8dk/n/FCCiIxiV57z6SJdH6SkCwlthcYVKJo9MZMqrebG37JvKqPXU74A6vxdpYS2ouy5lE7WYyZNatjb9k3lVHxO+JSpi3tTTWPoMCvVgseSMYNvuJGg/BY8kP407zPFilhsXq+ki4NgRdpYS2wuy5lRtpjJk1q3/P2TU5fExph6uq/wBeWs7nfvRLMC3/ABI0H4LHkhhW/wCI+g/BY8kJOcp6WUus7OFloNLybX0RPD1d8PLWdzv3oYervh5azud+9ErwbfcSNB+Cx5IYNvuJGg/BY8kLk2exbhO9xS5EVwdXfDy1nc796ESzAt9xH0H4LHkhBgrYGE7/ABS5HnB4DGcyHaP/AGNKDdCEKjq1mFBuhQboQiQFBuhQboQiCT6LKU4SMh2R6oQhAIf/2Q=="
-
-    {
-            title: 'Bank',
-            dataIndex: 'bank',
-            key: 'bank',
-            align: 'center',
-            render: bank => (
-                <Space size="middle">
-                    <BankOutlined style={{width: '20px', marginRight: '10px'}}/>
-                    {bank}
-                </Space>
-            ),
-        },
-    ];
-
-    const columns = [
-        {
-            title: '#',
-            dataIndex: 'id',
-            key: 'id',
-            render: (text, record, index) => index + 1,
-            align: 'center', // Center align column text
-        },
-
-        {
-            title: 'Bank-Id',
-            dataIndex: 'bankid',
-            key: 'bankid',
-            render: bankid => (
-                <Space size="middle">
-                    <BankOutlined style={{width: '20px', marginRight: '10px'}}/>
-                    {bankid}
-                </Space>
-            ),
-        },
-        {
-            title: 'Code',
-            dataIndex: 'country',
-            key: 'country',
-            render: country => (
-                <Space size="middle">
-                    <img
-                        src={country.flag}
-                        alt="flag"
-                        style={{width: '20px', marginRight: '10px'}}
-                    />
-                    {country.name}
-                </Space>
-            ),
-        },
-        {
-            title: 'Buying',
-            dataIndex: 'buying',
-            key: 'buying',
-            render: (text) => <Tag color="green">{text}</Tag>,
-            align: 'center', // Center align column text
-        },
-        {
-            title: 'Selling',
-            dataIndex: 'selling',
-            key: 'selling',
-            render: (text) => <Tag color="red">{text}</Tag>,
-            align: 'center', // Center align column text
-        },
-        {
-            title: 'Difference',
-            key: 'difference',
             render: (text, record) => (
                 <Space size="middle">
-                    ± {record.selling - record.buying}
+                    <img
+                        src={record.logo}
+                        alt="Currency Logo"
+                        style={{width: '20px', marginRight: '10px'}}
+                    />
+                    {text}
                 </Space>
             ),
-            align: 'center', // Center align column text
-        },
-        {
-            title: 'Transaction Date',
-            dataIndex: 'trn_date',
-            key: 'trn_date',
-            render: date => new Date(date).toLocaleDateString(),
-        },
-        // {
-        //     title: 'Actions',Overall exchange rate based on time event
-        //     key: 'actions',
-        //     render: (text, record) => (
-        //         <Space size="middle">
-        //             <Button onClick={() => showDrawer(record.id)} icon={<EditOutlined />} />
-        //             <Button onClick={() => confirmDelete(record.id)} icon={<DeleteOutlined />} danger />
-        //         </Space>
-        //     ),
-        //     align: 'center', // Center align column text
-        // },
-    ];
-    const countryCodecolumns = [
-        {
-            title: 'Bank',
-            dataIndex: 'banks',
-            key: 'banks',
-            render: banks => (
-                <Space size="middle">
-                    {banks.name}
-                </Space>
-            ),
+            align: 'center',
         },
         {
             title: 'Buying',
             dataIndex: 'buying',
             key: 'buying',
-            render: (text) => <Tag color="green">{text}</Tag>,
-            align: 'center', // Center align column text
+            align: 'center',
         },
         {
             title: 'Selling',
             dataIndex: 'selling',
             key: 'selling',
-            render: (text) => <Tag color="red">{text}</Tag>,
-            align: 'center', // Center align column text
-        },
-    ];
+            render: (text, record) => (
+                <Tag bordered={false} color="magenta">
+                    {text}
+                </Tag>
+            ),
 
+            align: 'center',
+        }
+    ];
+    if (!allBankExchangeRate.length) {
+        return <div>No data available</div>; // Optional message if there's no data
+    }
     return (
         <>
             {contextHolder}
-
             <Row gutter={[16, 16]} justify="center">
-
-                <Col span={16}>
-                    <h2>Best transaction rates based on buying</h2>
-                </Col>
-                {/* Removed Select dropdown and action buttons as requested */}
+                <h1>List of All Banks' Exchange Rate</h1>
                 <Col span={24}>
-                    <Table
-                        style={{width: '100%', marginTop: '20px'}}
-                        loading={loading}
-                        columns={staticDataColumns}
-                        dataSource={staticData} // Use static data here
-                        rowKey="code"
-                        bordered
-                        pagination={{pageSize: 5}}
-                    />
+                    {allBankExchangeRate.map((item) => (
+                        <Card key={item.id}
+                              style={{
+                                  marginLeft: '150px',
+                                  marginRight: '150px',
+                              }}
+                              title={
+                                  <div style={{
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      marginLeft: '60px',
+                                      marginRight: '60px'
+                                  }}>
+                                      <div style={{textAlign: 'left'}}>
+                                          <p>{item.bank_name} ({item.bank_id}) Transaction Rate</p>
+                                      </div>
+                                      <div style={{textAlign: 'right'}}>
+                                          <p>
+                                              Last Updated: {new Date(item.trn_date).toLocaleDateString('en-US', {
+                                              weekday: 'short',
+                                              year: 'numeric',
+                                              month: 'long',
+                                              day: 'numeric'
+                                          })}
+                                          </p>
+                                      </div>
+                                  </div>}>
+
+                            <Table
+                                className="custom-table"
+                                style={{width: '100%', marginTop: '20px'}}
+                                bordered
+                                dataSource={item.rate}
+                                pagination={false}
+                                columns={[
+                                    {
+                                        title: 'Code',
+                                        dataIndex: 'base',
+                                        key: 'base',
+                                        render: (text, record) => (
+                                            <Space size="middle">
+                                                <img
+                                                    src={record.logo}
+                                                    alt="Currency Logo"
+                                                    style={{width: '20px', marginRight: '10px'}}
+
+                                                />
+                                                {text}
+                                            </Space>
+                                        ),
+                                        align: 'center',
+                                    },
+                                    {
+                                        title: 'Buying Rate',
+                                        dataIndex: 'buying',
+                                        key: 'buying',
+                                        align: 'center',
+                                    },
+                                    {
+                                        title: 'Selling Rate',
+                                        dataIndex: 'selling',
+                                        key: 'selling',
+                                        align: 'center',
+                                    },
+                                    {
+                                        title: 'Difference',
+                                        key: 'difference',
+                                        render: (text, record) => (
+                                            <Space size="middle">
+                                                {/*±*/}
+                                                {(record.selling - record.buying).toFixed(2)}
+                                            </Space>
+                                        ),
+                                        align: 'center', // Center align column text
+                                    }
+                                ]}
+                                rowKey="base" // Unique identifier for each row
+                            />
+                        </Card>
+                    ))}
                 </Col>
             </Row>
-
-            <Row gutter={[16, 16]} justify="center">
-                <Col span={14}>
-                    <h2>Exchange Rates</h2>
-                </Col>
-                <Col span={6}>
-                    <Select
-                        allowClear
-                        showSearch
-                        onChange={handleBankChange}
-                        style={{width: '100%'}}
-                        placeholder="Please select bank"
-                        options={banks?.map(banks => ({label: banks.name, value: banks.id}))}
-                    />
-                </Col>
-                {/*<Col span={4}>*/}
-                {/*    <Button type="primary" icon={<PlusOutlined />} onClick={() => showDrawer()}>*/}
-                {/*        Add New Exchange Rate*/}
-                {/*    </Button>*/}
-                {/*</Col>*/}
-            </Row>
-
-            <Row gutter={[16, 16]} justify="center">
-                <Col span={24}>
-                    <Table
-                        style={{width: '100%', marginTop: '20px'}}
-                        loading={loading}
-                        columns={columns}
-                        dataSource={data}
-                        rowKey="id"
-                        bordered
-                        pagination={{pageSize: 5}}
-                    />
-                </Col>
-
-                <Col span={16}>
-                    <h2>Other currencies exchange rate</h2>
-                </Col>
-                <Col span={6}>
-                    <Select
-                        allowClear
-                        showSearch
-                        onChange={handleCountryCodeChange}
-                        style={{width: '100%'}}
-                        placeholder="Please select country code"
-                        options={country?.map(country => ({label: country.name, value: country.id}))}
-                    />
-                </Col>
-                <Col span={24}>
-                    <Table
-                        style={{width: '100%', marginTop: '20px'}}
-                        loading={loading}
-                        columns={countryCodecolumns}
-                        dataSource={exchangeRateBycountryCode}
-                        rowKey="id"
-                        bordered
-                        pagination={{pageSize: 5}}
-                    />
-                </Col>
-            </Row>
-
-            <Row gutter={[16, 16]} justify="center" style={{marginBottom: '20px'}}>
-                <Col span={16}>
-                    <h2> Overall exchange rate based on time event</h2>
-                </Col>
-
-                <Col span={10}>
-                    <Select
-                        value={selectedInstitution}
-                        onChange={handleInstitutionChange}
-                        style={{width: '100%'}}
-                    >
-                        <Option value="CBE">CBE</Option>
-                        <Option value="ABY">ABY</Option>
-                        <Option value="COOP">COOP</Option>
-                        <Option value="DASHN">DASHN</Option>
-                        <Option value="AWASH">AWASH</Option>
-                        <Option value="ENAT">ENAT</Option>
-                        <Option value="NIP">NIP</Option>
-                    </Select>
-                </Col>
-                <Col span={8}>
-                    <Select
-                        value={selectedTimePeriod}
-                        onChange={handleTimePeriodChange}
-                        style={{width: '100%'}}
-                    >
-                        <Option value="This Month">This Month</Option>
-                        <Option value="Today">Today</Option>
-                        <Option value="This Week">This Week</Option>
-                        <Option value="Last Year">Last Year</Option>
-                        <Option value="This Year">This Year</Option>
-                    </Select>
-                </Col>
-                <Col span={8}>
-                    <Select
-                        value={selectedCurrency}
-                        onChange={handleCurrencyChange}
-                        style={{width: '100%'}}
-                    >
-                        <Option value="USD">USD</Option>
-                        <Option value="EUR">EUR</Option>
-                        <Option value="GBP">GBP</Option>
-                    </Select>
-                </Col>
-            </Row>
-
-            {/* Drawer for adding/updating banks */}
-            {/*<Drawer*/}
-            {/*    title={addNewMode ? "Add New Exchange Rate" : "Update Exchange Rate"}*/}
-            {/*    width={360}*/}
-            {/*    placement="right"*/}
-            {/*    onClose={() => setOpen(false)}*/}
-            {/*    open={open}*/}
-            {/*>*/}
-            {/*    <Form.Item*/}
-            {/*        label="bankid"*/}
-            {/*        name="bankid"*/}
-            {/*    >*/}
-            {/*        <Input placeholder="Enter bank_id" />*/}
-            {/*    </Form.Item>*/}
-            {/*    <Form*/}
-            {/*        form={form}*/}
-            {/*        layout="vertical"*/}
-            {/*        onFinish={handleSubmit}*/}
-            {/*    >*/}
-            {/*        <Form.Item*/}
-            {/*            label="Bank"*/}
-            {/*            name="banks"*/}
-            {/*        >*/}
-            {/*            <Select*/}
-            {/*                allowClear*/}
-            {/*                style={{ width: '100%' }}*/}
-            {/*                placeholder="Please select bank"*/}
-            {/*                options={banks?.map(banks => ({ label: banks.name, value: banks.id }))}*/}
-            {/*            />*/}
-            {/*        </Form.Item>*/}
-            {/*        <Form.Item*/}
-            {/*            label="Code"*/}
-            {/*            name="country"*/}
-            {/*        >*/}
-            {/*            <Select*/}
-            {/*                allowClear*/}
-            {/*                style={{ width: '100%' }}*/}
-            {/*                placeholder="Please select country code"*/}
-            {/*                options={country?.map(country => ({ label: country.name, value: country.id }))}*/}
-            {/*            />*/}
-            {/*        </Form.Item>*/}
-            {/*        <Form.Item*/}
-            {/*            label="Buying"*/}
-            {/*            name="buying"*/}
-            {/*            rules={[{ required: true, message: 'Please enter buying!' }, { pattern: /^[0-9]+(\.[0-9]+)?$/, message: 'Please enter a valid number for Values !' }]}*/}
-            {/*        >*/}
-            {/*            <Input placeholder="Enter buying" />*/}
-            {/*        </Form.Item>*/}
-            {/*        <Form.Item*/}
-            {/*            label="Selling"*/}
-            {/*            name="selling"*/}
-            {/*            rules={[{ required: true, message: 'Please enter selling!' }, { pattern: /^[0-9]+(\.[0-9]+)?$/, message: 'Please enter a valid number for Values !' }]}*/}
-            {/*        >*/}
-            {/*            <Input placeholder="Enter selling" />*/}
-            {/*        </Form.Item>*/}
-
-            {/*        <Form.Item*/}
-            {/*            name="trn_date"*/}
-            {/*            label="Transaction Date"*/}
-            {/*            rules={[{ required: true, message: 'Please select the transaction date!' }]}*/}
-            {/*        >*/}
-            {/*            <DatePicker format="YYYY-MM-DD" />*/}
-            {/*            /!* Use RangePicker if you need a range of dates *!/*/}
-            {/*            /!* <RangePicker format="YYYY-MM-DD" /> *!/*/}
-            {/*        </Form.Item>*/}
-
-            {/*        <Form.Item>*/}
-            {/*            <Button type="primary" htmlType="submit" block>*/}
-            {/*                {addNewMode ? "Add Bank" : "Update Bank"}*/}
-            {/*            </Button>*/}
-            {/*        </Form.Item>*/}
-            {/*    </Form>*/}
-            {/*</Drawer>*/}
         </>
     );
 };

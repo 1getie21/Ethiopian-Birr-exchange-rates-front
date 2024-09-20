@@ -1,0 +1,35 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #fff; /* or your preferred background color */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+    flex: 1;
+}
+
+.logo {
+    max-width: 100%;
+    height: auto;
+}
+
+.header-menu {
+    flex: 2;
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-menu {
+        width: 100%;
+        display: block;
+    }
+}

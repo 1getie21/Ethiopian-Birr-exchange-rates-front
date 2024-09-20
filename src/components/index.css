@@ -12,3 +12,10 @@ code {
     monospace;
 }
 
+.custom-table .ant-table-header {
+  background-color: darkblue; /* Dark blue background */
+}
+
+.custom-table .ant-table-header th {
+  color: white; /* Optional: change text color to white for contrast */
+}

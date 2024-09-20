@@ -1,115 +1,115 @@
 import React, { useState } from 'react';
-import { CaretDownOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Drawer, Dropdown, Form, Input, Menu, notification } from "antd";
-import axios from 'axios';
- 
+import { AppstoreOutlined, DownOutlined, SettingOutlined } from '@ant-design/icons';
+import { Menu } from 'antd';
+import './Header.css'; // Ensure your styles are included
+import logo from './../assets/logo.png'; // Adjust the path based on where the image is located
+
+const items = [
+    {
+        label: 'News',
+        key: 'mail',
+    },
+    {
+        key: 'banks',
+        label: (<span>Banks In Ethiopia <DownOutlined /></span>),
+        children: [
+            {
+                label: 'All Banks In Ethiopia',
+                key: 'all_banks',
+            },
+            {
+                label: 'New Banks In Ethiopia',
+                key: 'new_banks',
+            },
+            {
+                label: 'Interest Free Banking',
+                key: 'interest_free',
+            },
+            {
+                label: 'Best Commercial Banks In Ethiopia 2024',
+                key: 'best_commercial',
+            },
+        ],
+    },
+    {
+        key: 'alipay',
+        label: (<span>Diaspora Banking<DownOutlined /></span>),
+        children: [
+            {
+                label: 'Diaspora Account In Ethiopia',
+                key: 'diaspora_account',
+            },
+            {
+                label: 'Diaspora Mortgage Loan In Ethiopia',
+                key: 'diaspora_mortgage',
+            },
+            {
+                label: 'Diaspora Car Loan In Ethiopia',
+                key: 'diaspora_car_loan',
+            },
+            {
+                label: 'Best Banks For Diaspora Loan In Ethiopia',
+                key: 'best_diaspora_loan',
+            },
+        ],
+    },
+    {
+        key: 'ex_rate',
+        label: 'Exchange Rate',
+    },
+    {
+        key: 'loan',
+        label: (<span>Loan<DownOutlined /></span>),
+        children: [
+            {
+                label: 'Car Loan In Ethiopia',
+                key: 'car_loan',
+            },
+            {
+                label: 'House Loan In Ethiopia',
+                key: 'house_loan',
+            },
+            {
+                label: 'Personal Loan In Ethiopia',
+                key: 'personal_loan',
+            },
+            {
+                label: 'Best Banks Loan Interest Rate In Ethiopia',
+                key: 'best_loan_rate',
+            },
+        ],
+    },
+];
+
+
 const Header = () => {
-    const [openDrawer, setOpenDrawer] = useState(false); 
-    const API_URL ="http://localhost:8080";
+    const [current, setCurrent] = useState('mail');
 
-    const axiosInstance = axios.create();
-    
-    const onSubmitClick = async (values) => {
-        try {
-            await updateRecordById(values, 1);
-            openNotificationWithIcon('success', 'Success', 'Your password is updated successfully.');
-            setOpenDrawer(false);
-        } catch (error) {
-            handleApiError(error);
-        }
+    const onClick = (e) => {
+        console.log('click ', e);
+        setCurrent(e.key);
     };
-
-    const updateRecordById = async (data, id) => {
-        const response = await axiosInstance.put(`${API_URL}/users/${id}`, data);
-        return response.data;
-    };
-
-    const handleApiError = (error) => {
-        const errorMessage = error?.response?.data?.apierror;
-        if (errorMessage) {
-            const { message, subErrors, status } = errorMessage;
-            const errorText = subErrors?.length > 0
-                ? `${message} ${subErrors[0]?.field} ${subErrors[0]?.message}`
-                : message;
-            openNotificationWithIcon('error', `Error ~${status || ''}`, errorText);
-        } else {
-            openNotificationWithIcon('error', 'Error', error.message || 'Unknown error occurred.');
-        }
-    };
-
-    const openNotificationWithIcon = (type, message, description) => {
-        notification[type]({
-            message,
-            description,
-        });
-    };
-
-    const password = () => (
-        <Drawer
-            title="Change Password"
-            placement="right"
-            onClose={() => setOpenDrawer(false)}
-            visible={openDrawer}
-        >
-            <Form
-                layout="vertical"
-                onFinish={onSubmitClick}
-                onFinishFailed={(errorInfo) => console.log('Failed:', errorInfo)}
-            >
-                <Form.Item
-                    label="New Password"
-                    name="password"
-                    placeholder="Enter new password ***"
-                    rules={[{ required: true, message: 'Please input password!' }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Submit
-                    </Button>
-                </Form.Item>
-            </Form>
-        </Drawer>
-    );
-
-    const menu = (
-        <Menu>
-            <Menu.Item onClick={""}>
-                <LogoutOutlined /> Logout
-            </Menu.Item>
-            <Menu.Item onClick={() => setOpenDrawer(true)}>
-                Change Password
-            </Menu.Item>
-        </Menu>
-    );
 
     return (
-        <div style={{
-            position: "fixed", // Make the header fixed
-            top: 0, // Position it at the top of the viewport
-            width: "100%", // Occupy full width
-            zIndex: 1000, // Set a high z-index to ensure it's on top of other elements
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.5)",
-            padding: "0 20px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "rgb(255,255,255)", // Semi-transparent white background
-            height: 60,
-            // backgroundImage: "url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx6yBZlLnqn-b9ZCU-bug-r6Ytcmdv1_dDPw&s')", // Replace 'path_to_your_image.jpg' with the actual path to your image
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-        }}>
-            <div style={{fontWeight: "bold", fontSize: 20}}>Traffic Management System</div>
-            <Dropdown overlay={menu} trigger={['click']}>
-                <Button type="text" style={{color: 'black', fontWeight: "bold", fontSize: 20}}>
-                    <UserOutlined/> {'Guest'}
-                    <CaretDownOutlined/>
-                </Button>
-            </Dropdown>
-            {password()}
-        </div>
+        <header className="header">
+            <div className="logo-container">
+                <img style={{width:'110px'}} src={logo} alt="Logo" />
+            </div>
+            <Menu
+                onClick={onClick}
+                selectedKeys={[current]}
+                mode="horizontal"
+                items={items.map(item => ({
+                    ...item,
+                    icon: item.icon || null,
+                    children: item.children ? item.children.map(child => ({
+                        ...child,
+                        key: child.key,
+                    })) : null,
+                }))}
+                className="header-menu"
+            />
+        </header>
     );
 };
 
