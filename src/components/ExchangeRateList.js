@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
     Button, Col, Tag, Row, Table, Space, notification, Card
 } from "antd";
-// import './table.css';
+ import './table.css';
 
 const axiosInstance = axios.create();
 
@@ -101,11 +101,26 @@ const ExchangeRateList = () => {
             ),
             align: 'center',
         },
+
         {
             title: 'Buying',
             dataIndex: 'buying',
             key: 'buying',
             align: 'center',
+            render: text => (
+                <span
+                //     style={{
+                //         color: 'green',
+                //         fontWeight: 'bold',
+                //         background: "linear-gradient(to right, rgba(10, 141, 255, 1), rgba(1, 5, 46, 0.98) 70%)",
+                //         padding: '2px 4px',
+                //         borderRadius: '3px',
+                //     }}
+                // >
+                    style={{ color: 'green', fontWeight: 'bold', backgroundColor: 'lightcyan', padding: '2px 4px', borderRadius: '3px' }}>
+                    {text}
+                </span>
+            ),
         },
         {
             title: 'Selling',
@@ -113,6 +128,20 @@ const ExchangeRateList = () => {
             key: 'selling',
 
             align: 'center',
+            render: text => (
+                <span
+                    // style={{
+                    //     color: 'red',
+                    //     fontWeight: 'bold',
+                    //     background: "linear-gradient(to right, rgba(255, 0, 0, 1), rgba(1, 5, 46, 0.98) 70%)",
+                    //     padding: '2px 4px',
+                    //     borderRadius: '3px',
+                    // }}
+                    style={{ color: 'red', fontWeight: 'bold', backgroundColor: '#ffcccb', padding: '2px 4px', borderRadius: '3px' }}>
+
+                    {text}
+                </span>
+            ),
         }
     ];
     if (!allBankExchangeRate.length) {
@@ -154,7 +183,7 @@ const ExchangeRateList = () => {
 
                             <Table
                                 className="custom-table"
-                                style={{width: '100%', marginTop: '20px'}}
+                                style={{ width: '100%', marginTop: '20px' }}
                                 bordered
                                 dataSource={item.rate}
                                 pagination={false}
@@ -168,8 +197,7 @@ const ExchangeRateList = () => {
                                                 <img
                                                     src={record.logo}
                                                     alt="Currency Logo"
-                                                    style={{width: '20px', marginRight: '10px'}}
-
+                                                    style={{ width: '20px', marginRight: '10px' }}
                                                 />
                                                 {text}
                                             </Space>
@@ -177,31 +205,72 @@ const ExchangeRateList = () => {
                                         align: 'center',
                                     },
                                     {
-                                        title: 'Buying Rate',
+                                        title: 'Buying',
                                         dataIndex: 'buying',
                                         key: 'buying',
                                         align: 'center',
+                                        render: text => (
+                                            <span
+                                            //     style={{
+                                            //         color: 'green',
+                                            //         fontWeight: 'bold',
+                                            //         background: "linear-gradient(to right, rgba(10, 141, 255, 1), rgba(1, 5, 46, 0.98) 70%)",
+                                            //         padding: '2px 4px',
+                                            //         borderRadius: '3px',
+                                            //     }}
+                                            // >
+                                                style={{ color: 'green', backgroundColor: 'lightcyan', padding: '2px 4px', borderRadius: '3px' }}>
+                                                {text}
+                                            </span>
+                                                ),
                                     },
                                     {
-                                        title: 'Selling Rate',
+                                        title: 'Selling',
                                         dataIndex: 'selling',
                                         key: 'selling',
                                         align: 'center',
+                                        render: text => (
+                                            <span
+                                            //     style={{
+                                            //         color: 'red',
+                                            //         fontWeight: 'bold',
+                                            //         background: "linear-gradient(to right, rgba(255, 0, 0, 1), rgba(1, 5, 46, 0.98) 70%)",
+                                            //         padding: '2px 4px',
+                                            //         borderRadius: '3px',
+                                            //     }}
+                                            // >
+                                                style={{ color: 'red', backgroundColor: '#ffcccb', padding: '2px 4px', borderRadius: '3px' }}>
+                                                {text}
+                                            </span>
+                                        ),
                                     },
-                                    {
+                                     {
                                         title: 'Difference',
                                         key: 'difference',
-                                        render: (text, record) => (
-                                            <Space size="middle">
-                                                {/*±*/}
-                                                {(record.selling - record.buying).toFixed(2)}
-                                            </Space>
-                                        ),
-                                        align: 'center', // Center align column text
-                                    }
+                                        render: (text, record) => {
+                                            const difference = (record.selling - record.buying).toFixed(2);
+                                            let formattedDifference;
+
+                                            if (difference > 0) {
+                                                formattedDifference = `+${difference}`; // Positive value
+                                            } else if (difference < 0) {
+                                                formattedDifference = difference; // Negative value
+                                            } else {
+                                                formattedDifference = '0'; // Omit signs for zero
+                                            }
+
+                                            return (
+                                                <Space size="middle">
+                                                    {formattedDifference}
+                                                </Space>
+                                            );
+                                        },
+                                        align: 'center',
+                                    },
                                 ]}
                                 rowKey="base" // Unique identifier for each row
                             />
+
                         </Card>
                     ))}
                 </Col>

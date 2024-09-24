@@ -10,6 +10,11 @@ const items = [
         key: 'mail',
     },
     {
+        label: 'About',
+        key: 'about',
+    },
+
+    {
         key: 'banks',
         label: (<span>Banks In Ethiopia <DownOutlined /></span>),
         children: [
