@@ -6,83 +6,17 @@ import logo from './../assets/logo.png'; // Adjust the path based on where the i
 
 const items = [
     {
+        key: 'ex_rate',
+        label: 'Exchange Rate',
+    },
+
+    {
         label: 'News',
         key: 'mail',
     },
     {
         label: 'About',
         key: 'about',
-    },
-
-    {
-        key: 'banks',
-        label: (<span>Banks In Ethiopia <DownOutlined /></span>),
-        children: [
-            {
-                label: 'All Banks In Ethiopia',
-                key: 'all_banks',
-            },
-            {
-                label: 'New Banks In Ethiopia',
-                key: 'new_banks',
-            },
-            {
-                label: 'Interest Free Banking',
-                key: 'interest_free',
-            },
-            {
-                label: 'Best Commercial Banks In Ethiopia 2024',
-                key: 'best_commercial',
-            },
-        ],
-    },
-    {
-        key: 'alipay',
-        label: (<span>Diaspora Banking<DownOutlined /></span>),
-        children: [
-            {
-                label: 'Diaspora Account In Ethiopia',
-                key: 'diaspora_account',
-            },
-            {
-                label: 'Diaspora Mortgage Loan In Ethiopia',
-                key: 'diaspora_mortgage',
-            },
-            {
-                label: 'Diaspora Car Loan In Ethiopia',
-                key: 'diaspora_car_loan',
-            },
-            {
-                label: 'Best Banks For Diaspora Loan In Ethiopia',
-                key: 'best_diaspora_loan',
-            },
-        ],
-    },
-    {
-        key: 'ex_rate',
-        label: 'Exchange Rate',
-    },
-    {
-        key: 'loan',
-        label: (<span>Loan<DownOutlined /></span>),
-        children: [
-            {
-                label: 'Car Loan In Ethiopia',
-                key: 'car_loan',
-            },
-            {
-                label: 'House Loan In Ethiopia',
-                key: 'house_loan',
-            },
-            {
-                label: 'Personal Loan In Ethiopia',
-                key: 'personal_loan',
-            },
-            {
-                label: 'Best Banks Loan Interest Rate In Ethiopia',
-                key: 'best_loan_rate',
-            },
-        ],
     },
 ];
 
