@@ -7,3 +7,6 @@
     height: 1px;
 }
 
+.custom-table .ant-table-thead > tr > th {
+    padding: 16px; /* Adjust padding for better spacing */
+}

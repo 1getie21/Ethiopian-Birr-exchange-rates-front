@@ -13,6 +13,7 @@ const Footer = () => {
                 background: "linear-gradient(to right, rgba(10, 141, 255, 1), rgba(1, 5, 46, 0.98) 70%)",
                 fontWeight: "bold",
                 padding: "20px",
+                marginTop:"25%"
             }}
             className="footer">
         <div className="footer-content"   >

@@ -86,7 +86,8 @@ const items = [
     //         },
     //     ],
     // },
-];
+]; marginLeft: '150px',
+    marginRight: '150px',}}
 
 
 const Header = () => {

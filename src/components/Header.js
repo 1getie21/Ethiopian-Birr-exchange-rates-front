@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AppstoreOutlined, DownOutlined, SettingOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import './Header.css'; // Ensure your styles are included
-import logo from './../assets/logo.png'; // Adjust the path based on where the image is located
+import logo from './../assets/log.png'; // Adjust the path based on where the image is located
 
 const items = [
     {
@@ -32,7 +32,7 @@ const Header = () => {
     return (
         <header className="header">
             <div className="logo-container">
-                <img style={{width:'110px'}} src={logo} alt="Logo" />
+                <img style={{width:'40px'}} src={logo} alt="Logo" />
             </div>
             <Menu
                 onClick={onClick}
